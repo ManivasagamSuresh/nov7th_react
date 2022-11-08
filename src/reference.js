@@ -4,23 +4,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { useFormik } from "formik";
-import { config } from "./config";
-
+import {config} from "./config"
 function App() {
   const [productList, setProductList] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
-  const [productId, setProductID] = useState(null);
+  const [isEdit, setEdit] = useState(false);
+  const [productId, setProductId] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const products = await axios.get(`${config.api}/products`);
         setProductList(products.data);
       } catch (error) {
-        alert("error");
+        alert("Some thing went wrong");
       }
     };
     fetchData();
   }, []);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -28,28 +28,24 @@ function App() {
     },
     onSubmit: async (values) => {
       try {
-        if (isEdit==false) {
-          let products = await axios.post(
-            `${config.api}/create-product`,
+        if (!isEdit) {
+          const product = await axios.post(
+            `${config.api}/product`,
             values
           );
-          setProductList([
-            ...productList,
-            { ...values, _id: products.data._id },
-          ]); 
+          setProductList([...productList, { ...values, _id: product.data.id }]);
           formik.resetForm();
         } else {
           await axios.put(`${config.api}/product/${productId}`, values);
-          const pIndex = productList.findIndex((p) => p._id == productId);
+          const pIndex = productList.findIndex((p) => p.id == productId);
           productList[pIndex] = values;
           setProductList([...productList]);
-          setIsEdit(false);
           formik.resetForm();
+          setEdit(false);
         }
       } catch (error) {
-        console.log("error")
-        alert(error);
-
+        console.log(error)
+        alert("Something went wrong");
       }
     },
   });
@@ -57,25 +53,23 @@ function App() {
   const deleteProduct = async (id) => {
     try {
       await axios.delete(`${config.api}/product/${id}`);
-      const pIndex = productList.findIndex((p) => p._id == id);
+      const pIndex = productList.findIndex((p) => p.id == id);
       productList.splice(pIndex, 1);
       setProductList([...productList]);
     } catch (error) {
-      alert("something went wrong");
+      console.log(error.response.data.message)
+      alert(error.response.data.message);
     }
   };
 
-  const editproduct = async (id) => {
+  const editProduct = async (id) => {
     try {
-      let product = await axios.get(`${config.api}/product/${id}`);
-
+      const product = await axios.get(`${config.api}/product/${id}`);
       formik.setValues(product.data);
-      setIsEdit(true);
-
-      setProductID(id);
-    
+      setProductId(id);
+      setEdit(true);
     } catch (error) {
-      alert("error");
+      alert("Something went wrong");
     }
   };
   return (
@@ -87,7 +81,7 @@ function App() {
               <div className="col-lg-6">
                 <label>Name</label>
                 <input
-                  type= {"text"}
+                  type={"text"}
                   className="form-control"
                   name="name"
                   value={formik.values.name}
@@ -104,10 +98,12 @@ function App() {
                   onChange={formik.handleChange}
                 />
               </div>
-              <div className="col-lg-4 mt-2">
+            </div>
+            <div className="row mt-2">
+              <div className="col-lg-6">
                 <input
                   type={"submit"}
-                  value={isEdit ? "edit" : "submit"}
+                  value={isEdit ? "Update" : "Submit"}
                   className="btn btn-primary"
                 />
               </div>
@@ -115,39 +111,34 @@ function App() {
           </form>
         </div>
         <div className="col-lg-6">
-          <table class="table">
+          <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Id</th>
-                <th scope="col">name</th>
-                <th scope="col">price</th>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-              {
-              productList.map((prod) => {
+              {productList.map((product, index) => {
                 return (
                   <tr>
-                    <th scope="row">{prod._id}</th>
-                    <td>{prod.name}</td>
-                    <td>{prod.price}</td>
+                    <th scope="row">{product._id}</th>
+                    <td>{product.name}</td>
+                    <td>{product.price}</td>
                     <td>
                       <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => {
-                          deleteProduct(prod._id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => {
-                          editproduct(prod._id);
-                        }}
+                        onClick={() => editProduct(product._id)}
+                        className="btn btn-info btn-sm"
                       >
                         Edit
+                      </button>
+                      <button
+                        onClick={() => deleteProduct(product._id)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
