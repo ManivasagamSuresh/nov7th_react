@@ -45,6 +45,11 @@ try {
             </div>
         </div>
         </form>
+        <div className='col-4-lg mt-5'>
+        <Link to={"/CreateUser"}><button className=" btn btn-primary">Create User</button></Link>
+            
+        </div>
+        
     </div>
 
   )

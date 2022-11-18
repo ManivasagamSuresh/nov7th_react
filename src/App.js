@@ -11,6 +11,7 @@ import Products from "./Products";
 import ForgotPassword from "./ForgotPassword";
 import ChangePassword from "./ChangePassword";
 import LoginPass from "./LoginPass";
+import CreateUser from "./CreateUser";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
       <Route path="/LoginPass" element={<LoginPass/>}></Route>
       <Route path="/ForgotPassword" element={<ForgotPassword/>}></Route>
       <Route path="/ChangePassword/:id" element={<ChangePassword/>}></Route>
+      <Route path="/CreateUser" element={<CreateUser/>}></Route>
       <Route path="/products" element={<Products/>}></Route>
     </Routes>
     </BrowserRouter>

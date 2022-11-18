@@ -1,42 +1,30 @@
 import axios from 'axios';
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik'
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { config } from './config';
 
 
-function ForgotPassword() {
+function Login() {
+    const navigate = useNavigate()
     const loginform = useFormik({
         initialValues:{
             email:"",
+            password:"",
         },
         onSubmit:async(values)=>{
-
+// console.log(values);
 try {
-   const user = await axios.post(`${config.api}/users/checkmail`,values);
-   console.log(user);
-   if(user)
-    {
-        await axios.put(`${config.api}/tempPassChange/${user.data._id}`);
-        console.log("temp pass changed");
-        await axios.post(`${config.api}/sendMail/${user.data._id}`,user.data);
-            
-        
-            
-            alert("please check your mail")
-        }
-    
-    else{
-        alert('Email does not exist')
-    }
-
+   const user = await axios.post(`${config.api}/user/register`,values);
+   
+   {navigate("/")}
    
 } catch (error) {
-    console.log(error);
     alert(error.response.data.message)
 }
         }
     })
-
   return (
     <div className='container'>
         <form onSubmit={loginform.handleSubmit}>
@@ -45,16 +33,21 @@ try {
                 <label>Email</label>
                 <input name='email' onChange={loginform.handleChange} value={loginform.values.email} className='form-control' type={"email"}></input>
             </div>
-            
+            <div className='col-lg-12 form-group'>
+                <label>Password</label>
+                <input name='password' onChange={loginform.handleChange} value={loginform.values.password} className='form-control' type={"password"}></input>
+            </div>
             <div className='col-lg-12 form-group'>
 
                 <input className='btn btn-primary' type={"submit"}></input>
+               
             </div>
         </div>
         </form>
+        
     </div>
 
   )
 }
 
-export default ForgotPassword
+export default Login

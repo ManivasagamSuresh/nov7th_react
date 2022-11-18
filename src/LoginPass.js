@@ -19,7 +19,7 @@ try {
    const user = await axios.post(`${config.api}/user/login`,values);
    localStorage.setItem("myreact",user.data.token)
    if(user.data.message === "success")
-   {navigate(`/ChangePassword/${user._id}`)}
+   {navigate(`/ChangePassword/${user.data._id}`)}
    
 } catch (error) {
     alert(error.response.data.message)

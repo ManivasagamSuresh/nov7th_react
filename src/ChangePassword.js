@@ -23,11 +23,11 @@ function ChangePassword() {
     <div className='row'>
         <div className='col-lg-12 form-group'>
             <label>password</label>
-            <input name='email' onChange={form.handleChange} value={form.values.password} className='form-control' type={"password"}></input>
+            <input name='password' onChange={form.handleChange} value={form.values.password} className='form-control' type={"password"}></input>
         </div>
         <div className='col-lg-12 form-group'>
             <label>Confirm Password</label>
-            <input name='password' onChange={form.handleChange} value={form.values.confirmpassword} className='form-control' type={"password"}></input>
+            <input name='confirmpassword' onChange={form.handleChange} value={form.values.confirmpassword} className='form-control' type={"password"}></input>
         </div>
         <div className='col-lg-12 form-group'>
 
